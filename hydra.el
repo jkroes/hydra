@@ -120,6 +120,8 @@ warn: keep KEYMAP and issue a warning instead of running the command."
     (setq hydra-curr-on-exit on-exit)
     (setq hydra-curr-foreign-keys foreign-keys)
     (add-hook 'pre-command-hook 'hydra--clearfun)
+    (if (boundp 'which-key-show-transient-maps)
+        (setq which-key-show-transient-maps t))
     (internal-push-keymap keymap 'overriding-terminal-local-map)))
 
 (defun hydra--clearfun ()
@@ -158,7 +160,9 @@ warn: keep KEYMAP and issue a warning instead of running the command."
   (dolist (frame (frame-list))
     (with-selected-frame frame
       (when overriding-terminal-local-map
-        (internal-pop-keymap hydra-curr-map 'overriding-terminal-local-map))))
+        (internal-pop-keymap hydra-curr-map 'overriding-terminal-local-map)
+        (if (boundp 'which-key-show-transient-maps)
+            (setq which-key-show-transient-maps nil)))))
   (setq hydra-curr-map nil)
   (unless hydra--ignore
     (when hydra-curr-on-exit
